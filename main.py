@@ -20,19 +20,22 @@ def get_response(url, headers, params):
     response = requests.get(url, headers=headers, params=params)
     return response
 
+def get_querystring(search_term):
+    search_param = input(search_term)
+    querystring = {'term': search_param, 'locale': 'en-US'}
+    return querystring
+
 
 def get_searched_term_results():
-    searched_term = input("What song are you looking for? ")
-    querystring = {'term': searched_term, 'locale': 'en-US'}
+    querystring = get_querystring("What song or artist are you looking for? ")
     songs_and_artists = get_response(BASE_URL + AUTO_COMPLETE, headers, querystring)
     records = songs_and_artists.json()['hints']
     for record in records:
         printer.pprint(record['term'])
 
 
-def get_song_details():
-    searched_song = input("Which song do you want details on? ")
-    querystring = {'term': searched_song, 'locale': 'en-US'}
+def get_details():
+    querystring = get_querystring("Which record do you want details on? ")
     songs = get_response(BASE_URL + SEARCH, headers, querystring)
     for song in songs.json()['tracks']['hits']:
         title = song['track']['title']
@@ -43,7 +46,11 @@ def get_song_details():
 
 def main():
     get_searched_term_results()
-    get_song_details()
+    want_details = input("Do you want details on any search results? (y/n)")
+    if want_details :
+        get_details()
+    else:
+        get_searched_term_results()
 
 
 if __name__ == "__main__":
