@@ -1,5 +1,6 @@
 import pyaudio
-import wave
+import base64
+import time
 
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
@@ -7,33 +8,42 @@ CHANNELS = 1
 RATE = 44100
 
 
-def get_frames():
+def get_frames(output_file):
     p = pyaudio.PyAudio()
     stream = p.open(
         format=FORMAT, channels=CHANNELS, rate=RATE, frames_per_buffer=CHUNK, input=True
     )
-    print("start recording...")
-    # frames = []
-    seconds = 3
-    for i in range(0, int(RATE / CHUNK * seconds)):
-        frames = stream.read(CHUNK)
-        # print(data)
-        # frames.append(data)
-  
+    print("Recording started, precc Ctrl + c to stop")
+
+    frames = []
+    seconds = 8
+    # try:
+    for _ in range(0, int(RATE / CHUNK * seconds)):
+        data = stream.read(CHUNK)
+        frames.append(data)
+    # except KeyboardInterrupt:
+    #     pass
+
     print("recording stopped")
+
     stream.stop_stream()
     stream.close()
     p.terminate()
-    return frames, p
+
+    with open(output_file, "wb") as file:
+        file.write(b"".join(frames))
+        file.close()
+    print(f"Recording saved to {output_file}.")
 
 
-# def download_recording():
-#     frames, p = get_frames()
-#     wf = wave.open("recording.wav", "wb")
-#     wf.setnchannels(CHANNELS)
-#     wf.setsampwidth(p.get_sample_size(FORMAT))
-#     wf.setframerate(RATE)
-#     wf.writeframes(b"".join(frames))
-#     wf.close()
-
-# download_recording()
+def convert_raw_to_base64():
+    get_frames("recorded.raw")
+    time.sleep(3)
+    with open("recorded.raw", "rb") as file:
+        audio_raw = file.read()
+        audio_encoded = base64.b64encode(audio_raw)
+        file.close()
+        with open("recorded.txt", "wb") as file:
+            file.write(audio_encoded)
+            file.close()
+        return audio_encoded
