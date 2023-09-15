@@ -25,10 +25,12 @@ def get_response(url, headers, params):
 
 def main():
     search = get_searched_term()
-    print(search)
     querystring = {'term': search, 'locale': 'en-US'}
-    data = get_response(BASE_URL, headers, querystring)
-    printer.pprint(data.json())
+    songs_and_artists = get_response(BASE_URL, headers, querystring)
+    records = songs_and_artists.json()['hints']
+    printer.pprint(songs_and_artists.json()['hints'])
+    for record in records:
+        printer.pprint(record['term'])
 
 
 if __name__ == "__main__":
