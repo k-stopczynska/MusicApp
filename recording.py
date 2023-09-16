@@ -13,16 +13,14 @@ def get_frames(output_file):
     stream = p.open(
         format=FORMAT, channels=CHANNELS, rate=RATE, frames_per_buffer=CHUNK, input=True
     )
-    print("Recording started, precc Ctrl + c to stop")
+    print("Recording started...")
 
     frames = []
     seconds = 8
-    # try:
+
     for _ in range(0, int(RATE / CHUNK * seconds)):
         data = stream.read(CHUNK)
         frames.append(data)
-    # except KeyboardInterrupt:
-    #     pass
 
     print("recording stopped")
 

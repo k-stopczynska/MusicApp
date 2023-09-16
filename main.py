@@ -1,5 +1,6 @@
 import os
 import requests
+import webbrowser
 from dotenv import load_dotenv
 from pprint import PrettyPrinter
 from recording import convert_raw_to_base64
@@ -40,6 +41,12 @@ def get_searched_term_results():
         printer.pprint(record["term"])
 
 
+def open_song_url(url):
+    want_open = input("Do you want me to play this song? (y/n) ")
+    if want_open:
+        webbrowser.open_new_tab(url)
+
+
 def get_details():
     querystring = get_querystring("Which record do you want details on? ")
     data = get_response(BASE_URL + SEARCH, headers, querystring)
@@ -49,6 +56,7 @@ def get_details():
         artist = song["track"]["subtitle"]
         url = song["track"]["url"]
         print(f"Title: {title}, Artist: {artist}, URL: {url}")
+        open_song_url(url)
 
 
 def get_details_from_recording():
@@ -67,13 +75,13 @@ def get_details_from_recording():
 
 
 def main():
-    get_details_from_recording()
-    # get_searched_term_results()
-    # want_details = input("Do you want details on any search results? (y/n) ")
-    # if want_details :
-    #     get_details()
-    # else:
-    #     get_searched_term_results()
+    # get_details_from_recording()
+    get_searched_term_results()
+    want_details = input("Do you want details on any search results? (y/n) ")
+    if want_details :
+        get_details()
+    else:
+        get_searched_term_results()
 
 
 if __name__ == "__main__":
