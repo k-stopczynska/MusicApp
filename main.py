@@ -75,13 +75,13 @@ def get_details_from_recording():
 
 
 def main():
-    # get_details_from_recording()
-    get_searched_term_results()
-    want_details = input("Do you want details on any search results? (y/n) ")
-    if want_details :
-        get_details()
-    else:
-        get_searched_term_results()
+    get_details_from_recording()
+    # get_searched_term_results()
+    # want_details = input("Do you want details on any search results? (y/n) ")
+    # if want_details :
+    #     get_details()
+    # else:
+    #     get_searched_term_results()
 
 
 if __name__ == "__main__":

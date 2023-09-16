@@ -1,6 +1,7 @@
 import pyaudio
 import base64
 import time
+from files import write_to_file
 
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
@@ -28,9 +29,7 @@ def get_frames(output_file):
     stream.close()
     p.terminate()
 
-    with open(output_file, "wb") as file:
-        file.write(b"".join(frames))
-        file.close()
+    write_to_file(output_file, b"".join(frames))
     print(f"Recording saved to {output_file}.")
 
 
@@ -41,7 +40,5 @@ def convert_raw_to_base64():
         audio_raw = file.read()
         audio_encoded = base64.b64encode(audio_raw)
         file.close()
-        with open("recorded.txt", "wb") as file:
-            file.write(audio_encoded)
-            file.close()
+        write_to_file("recorded.txt", audio_encoded)
         return audio_encoded
