@@ -1,6 +1,7 @@
 import os
 import webbrowser
 import requests
+import time
 from pprint import PrettyPrinter
 from dotenv import load_dotenv
 from recording import convert_raw_to_base64
@@ -23,8 +24,12 @@ printer = PrettyPrinter()
 
 
 def get_response(url, headers, params):
-    response = requests.get(url, headers=headers, params=params)
-    return response
+    try:
+        response = requests.get(url, headers=headers, params=params)
+        if response.status_code == 200:
+            return response
+    except:
+        print("Something went wrong...")
 
 
 def get_querystring(search_term):
@@ -49,7 +54,7 @@ def open_song_url(url):
 
 def get_details():
     querystring = get_querystring("Which record do you want details on? ")
-    data = get_response(BASE_URL + SEARCH, headers, querystring)
+    data = get_response(BASE_URL + SEARCH, headers, querystring.lower())
     songs = data.json()["tracks"]["hits"]
     for song in songs:
         title = song["track"]["title"]
@@ -62,26 +67,33 @@ def get_details():
 def get_details_from_recording():
     decoded_frames = convert_raw_to_base64()
     headers["content-type"] = "text/plain"
-    response = requests.post(BASE_URL + DETECT, data=decoded_frames, headers=headers)
-    print(response.json())
+    try:
+        response = requests.post(BASE_URL + DETECT, data=decoded_frames, headers=headers)
+        if (response.status_code == 200 & len(response.json()['matches']) > 0):
+            printer.pprint(len(response.json()['matches']))
+            printer.pprint(f"Title: {response.json()['track']['sections'][0]['metadata'][0]['text']}")
+            printer.pprint(f"Artist: {response.json()['track']['sections'][0]['metadata'][1]['text']}")
+            printer.pprint(f"Song text: {response.json()['track']['sections'][1]['text']}")
+        elif (len(response.json()['matches']) == 0):
+            print("Your music fragment was too short, we couldn't find a match, try again")
+            print("We are going to start recording again in 3 seconds")
+            time.sleep(3)
+            get_details_from_recording()
+    except:
+        print(response.status_code)
+        print("Something went wrong...")
+        print("Program will shut down, try again later...")
 
-    printer.pprint(
-        f"Title: {response.json()['track']['sections'][0]['metadata'][0]['text']}"
-    )
-    printer.pprint(
-        f"Artist: {response.json()['track']['sections'][0]['metadata'][1]['text']}"
-    )
-    printer.pprint(f"Song text: {response.json()['track']['sections'][1]['text']}")
-
+  
 
 def main():
-    # get_details_from_recording()
-    get_searched_term_results()
-    want_details = input("Do you want details on any search results? (y/n) ").lower() == 'y'
-    if want_details :
-        get_details()
-    else:
-        main()
+    get_details_from_recording()
+    # get_searched_term_results()
+    # want_details = input("Do you want details on any search results? (y/n) ").lower() == 'y'
+    # if want_details :
+    #     get_details()
+    # else:
+    #     main()
 
 
 

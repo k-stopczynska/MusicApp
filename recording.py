@@ -17,7 +17,7 @@ def get_frames(output_file):
     print("Recording started...")
 
     frames = []
-    seconds = 8
+    seconds = 2
 
     for _ in range(0, int(RATE / CHUNK * seconds)):
         data = stream.read(CHUNK)
