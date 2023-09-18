@@ -34,7 +34,7 @@ def get_response(url, headers, params):
 
 def get_querystring(search_term):
     search_param = input(search_term)
-    querystring = {"term": search_param, "locale": "en-US"}
+    querystring = {"term": search_param.lower(), "locale": "en-US"}
     return querystring
 
 
@@ -54,7 +54,7 @@ def open_song_url(url):
 
 def get_details():
     querystring = get_querystring("Which record do you want details on? ")
-    data = get_response(BASE_URL + SEARCH, headers, querystring.lower())
+    data = get_response(BASE_URL + SEARCH, headers, querystring)
     songs = data.json()["tracks"]["hits"]
     for song in songs:
         title = song["track"]["title"]
@@ -87,13 +87,13 @@ def get_details_from_recording():
   
 
 def main():
-    get_details_from_recording()
-    # get_searched_term_results()
-    # want_details = input("Do you want details on any search results? (y/n) ").lower() == 'y'
-    # if want_details :
-    #     get_details()
-    # else:
-    #     main()
+    # get_details_from_recording()
+    get_searched_term_results()
+    want_details = input("Do you want details on any search results? (y/n) ").lower() == 'y'
+    if want_details :
+        get_details()
+    else:
+        main()
 
 
 
