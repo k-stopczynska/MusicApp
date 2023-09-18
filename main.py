@@ -55,7 +55,7 @@ def get_details():
         title = song["track"]["title"]
         artist = song["track"]["subtitle"]
         url = song["track"]["url"]
-        print(f"Title: {title}, Artist: {artist}, URL: {url}")
+        print(f"Title: {title}, \nArtist: {artist}, \nURL: {url}")
         open_song_url(url)
 
 
