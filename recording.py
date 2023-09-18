@@ -41,5 +41,5 @@ def convert_raw_to_base64():
         audio_encoded = base64.b64encode(audio_raw)
         file.close()
         write_to_file("recorded.txt", audio_encoded)
-        print("Recording saved to "recorded.txt".")
+        print("Recording saved to recorded.txt.")
         return audio_encoded

@@ -1,8 +1,8 @@
 import os
-import requests
 import webbrowser
-from dotenv import load_dotenv
+import requests
 from pprint import PrettyPrinter
+from dotenv import load_dotenv
 from recording import convert_raw_to_base64
 
 load_dotenv()
@@ -42,7 +42,7 @@ def get_searched_term_results():
 
 
 def open_song_url(url):
-    want_open = input("Do you want me to play this song? (y/n) ")
+    want_open = input("Do you want me to play this song? (y/n) ").lower() == 'y'
     if want_open:
         webbrowser.open_new_tab(url)
 
@@ -63,7 +63,7 @@ def get_details_from_recording():
     decoded_frames = convert_raw_to_base64()
     headers["content-type"] = "text/plain"
     response = requests.post(BASE_URL + DETECT, data=decoded_frames, headers=headers)
-    print(response)
+    print(response.json())
 
     printer.pprint(
         f"Title: {response.json()['track']['sections'][0]['metadata'][0]['text']}"
@@ -75,13 +75,14 @@ def get_details_from_recording():
 
 
 def main():
-    get_details_from_recording()
-    # get_searched_term_results()
-    # want_details = input("Do you want details on any search results? (y/n) ")
-    # if want_details :
-    #     get_details()
-    # else:
-    #     get_searched_term_results()
+    # get_details_from_recording()
+    get_searched_term_results()
+    want_details = input("Do you want details on any search results? (y/n) ").lower() == 'y'
+    if want_details :
+        get_details()
+    else:
+        main()
+
 
 
 if __name__ == "__main__":
