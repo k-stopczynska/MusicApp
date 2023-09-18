@@ -32,10 +32,16 @@ def get_response(url, headers, params):
         print("Something went wrong...")
 
 
+
 def get_querystring(search_term):
-    search_param = input(search_term)
-    querystring = {"term": search_param.lower(), "locale": "en-US"}
-    return querystring
+    search_param = input(search_term).strip().lower()
+    if(len(search_param) > 0):
+        print(search_param)
+        querystring = {"term": search_param, "locale": "en-US"}
+        return querystring
+    else:
+        querystring = get_querystring(search_term)
+        return querystring
 
 
 def get_searched_term_results():
@@ -46,8 +52,9 @@ def get_searched_term_results():
         printer.pprint(record["term"])
 
 
+
 def open_song_url(url):
-    want_open = input("Do you want me to play this song? (y/n) ").lower() == 'y'
+    want_open = input("Do you want me to play this song? (y/n) ").strip().lower() == 'y'
     if want_open:
         webbrowser.open_new_tab(url)
 
@@ -70,12 +77,12 @@ def get_details_from_recording():
     try:
         response = requests.post(BASE_URL + DETECT, data=decoded_frames, headers=headers)
         if (response.status_code == 200 & len(response.json()['matches']) > 0):
-            printer.pprint(len(response.json()['matches']))
-            printer.pprint(f"Title: {response.json()['track']['sections'][0]['metadata'][0]['text']}")
-            printer.pprint(f"Artist: {response.json()['track']['sections'][0]['metadata'][1]['text']}")
-            printer.pprint(f"Song text: {response.json()['track']['sections'][1]['text']}")
+            details = response.json()['track']['sections']
+            printer.pprint(f"Title: {details[0]['metadata'][0]['text']}")
+            printer.pprint(f"Artist: {details[0]['metadata'][1]['text']}")
+            printer.pprint(f"Song text: {details[1]['text']}")
         elif (len(response.json()['matches']) == 0):
-            print("Your music fragment was too short, we couldn't find a match, try again")
+            print("Your music fragment was too short, we couldn't find a match, try again...")
             print("We are going to start recording again in 3 seconds")
             time.sleep(3)
             get_details_from_recording()
