@@ -1,4 +1,3 @@
-def write_to_file(file_name, content):
-    with open(file_name, "wb") as file:
+def write_to_file(file_name, content, mode):
+    with open(file_name, mode) as file:
         file.write(content)
-        file.close()
