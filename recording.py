@@ -1,7 +1,8 @@
 import pyaudio  # module for recording raw music
 import base64  # module to convert raw binary file to base64- format that is
 # needed in request according to documentation of an API
-import time
+import time  # just to inform user what will happen to be ready with song
+# playing in specified amount of time
 from files import write_to_file
 from utils import headers, BASE_URL, ENDPOINTS
 from request import get_response
@@ -9,7 +10,6 @@ from request import get_response
 
 def get_frames(output_file):
     # data format needed for request according to documentation of an API
-    # only file_format will change
     chunk = 1024
     file_format = pyaudio.paInt16
     channels = 1
@@ -61,6 +61,7 @@ def get_details_from_recording():
         details = response.json()['track']['sections']
         print(f"Title: {details[0]['metadata'][0]['text']}, ")
         print(f"\nArtist: {details[0]['metapages'][0]['caption']}, ")
+        # not every song has a text available
         if 'text' in details[1]:
             song_text = details[1]['text']
             print("\nSong text: \n")

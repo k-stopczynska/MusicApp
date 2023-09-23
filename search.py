@@ -1,4 +1,4 @@
-import webbrowser
+import webbrowser  # opens new tab with song url
 from request import get_querystring
 from request import get_response
 from utils import BASE_URL, ENDPOINTS, headers

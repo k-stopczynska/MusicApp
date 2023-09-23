@@ -1,4 +1,4 @@
-import requests
+import requests # requests is sending get and post requests to Shazam API, depending on chosen module
 
 
 def get_querystring(search_term):
@@ -9,6 +9,7 @@ def get_querystring(search_term):
     else:
         querystring = get_querystring(search_term)
         return querystring
+
 
 def get_response(method, url, headers, params=None, data=None):
     try:
